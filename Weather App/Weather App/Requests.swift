@@ -19,22 +19,42 @@ struct ResquestTest{
         }
       
         let session = URLSession.shared
-        session.dataTask(with: url){(data,response,error) in
-            if let response = response {
-                print (response)
-            }
+        session.dataTask(with: url){ (data,response,error) in
+            
             
             if let data = data {
-                print (data)
-            
-            do {
-                let json = try JSONSerialization.jsonObject(with: data, options: [])
-                print(json)
+                
+                
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    //                print(json)
+                    let decoder = JSONDecoder()
+                    let test = try decoder.decode(cityModel.self, from: data)
+                    print(test.name)
+                    print("Latitude: \(test.coordinates.latitude)")
+                    print("Longitude: \(test.coordinates.longitude)")
+                
             } catch {
                 print (error)
             }
-        }
+            }
             }.resume()
+        
+}
+}
+struct cityModel : Codable {
+    let coordinates :Coordinates
+    let name   : String
+    private enum CodingKeys:String,CodingKey{
+        case coordinates = "coord", name = "name"
     }
     
+}
+struct Coordinates : Codable{
+    let latitude : Double
+    let longitude : Double
+    private enum CodingKeys:String,CodingKey{
+        case latitude = "lat",
+         longitude = "lon"
+    }
 }
