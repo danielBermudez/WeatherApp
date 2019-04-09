@@ -10,6 +10,7 @@ import Foundation
 struct CityModel : Codable {
     let coordinates :CoordinatesModel
     let name   : String
+    var weather : WeatherModel?
     private enum CodingKeys:String,CodingKey{
         case coordinates = "coord", name = "name"
     }
@@ -17,8 +18,7 @@ struct CityModel : Codable {
 }
 struct CoordinatesModel : Codable{
     let latitude : Double
-    let longitude : Double
-    var weather : WeatherModel?
+    let longitude : Double    
     private enum CodingKeys:String,CodingKey{
         case latitude = "lat",
         longitude = "lon"

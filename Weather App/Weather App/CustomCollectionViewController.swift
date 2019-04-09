@@ -11,17 +11,28 @@ import UIKit
 private let weatherCellIdentifier = "weatherCell"
 
 
+let viewModel = ViewModel()
 
 class CustomCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     let requests = Request()
     var sizeCounter = 0
+   var delegate : DetailDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
-        requests.getRequest(cities: ["Bogota","Tampa","Tokyo"])
-        
+        viewModel.convertDataToModel(completionHandler: {
+            DispatchQueue.main.async {
+                 self.collectionView.reloadData()
+            }
+           
+        })
+       
+        let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
+        view.addSubview(navBar)
+        let navItem = UINavigationItem(title: "SomeTitle")
+        navBar.setItems([navItem], animated: false) 
         // Register cell classes
         self.collectionView!.register(WeatherCell.self, forCellWithReuseIdentifier: weatherCellIdentifier)
 
@@ -48,7 +59,7 @@ class CustomCollectionViewController: UICollectionViewController, UICollectionVi
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 10
+        return viewModel.cityModelList.count
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         sizeCounter = (sizeCounter + 1)
@@ -60,7 +71,9 @@ class CustomCollectionViewController: UICollectionViewController, UICollectionVi
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: weatherCellIdentifier, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: weatherCellIdentifier, for: indexPath) as! WeatherCell
+        cell.cityLabel.text = viewModel.cityModelList[indexPath.item].name
+        cell.degreeLabel.text =  String(viewModel.cityModelList[indexPath.item].weather!.temperature)
     
         // Configure the cell
     
@@ -88,15 +101,19 @@ class CustomCollectionViewController: UICollectionViewController, UICollectionVi
     override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
         return false
     }
-
+  
     override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
+        return true
     }
 
     override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
+       
+    }*/
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detail = DetailWeatherViewController()
+        self.navigationController?.pushViewController(detail, animated: true)
+            detail.loadCityModel(city: viewModel.cityModelList[indexPath.item])
     }
-    */
 
 }
 class WeatherCell: UICollectionViewCell{
@@ -134,4 +151,8 @@ class WeatherCell: UICollectionViewCell{
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+}
+protocol DetailDelegate {
+    func loadCityModel(city :CityModel)
 }
