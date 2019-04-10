@@ -34,6 +34,25 @@ struct Request{
    
         
     }
+    func testCity(cityName :String ,completionHandler: @escaping (Data) -> Void){
+        
+            guard let url = URL(string: "http://api.openweathermap.org/data/2.5/weather?q=\(cityName)&APPID=27ceddda81acd990a193110188a0afe8")
+                else
+            {
+                return
+            }
+            
+            let session = URLSession.shared
+            session.dataTask(with: url){ (data,response,error) in
+                if let data = data {
+                completionHandler(data)
+                }
+                }.resume()
+            
+            
+        }
+        
+        
     
 }
 

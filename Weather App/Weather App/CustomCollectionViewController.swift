@@ -26,19 +26,30 @@ class CustomCollectionViewController: UICollectionViewController, UICollectionVi
             DispatchQueue.main.async {
                  self.collectionView.reloadData()
             }
+            
            
         })
+        viewModel.testCity(cityName: "bogota", completionHandler: { result in
+        print(result)
+        
+        })
        
-        let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 320, height: 44))
-        view.addSubview(navBar)
-        let navItem = UINavigationItem(title: "SomeTitle")
-        navBar.setItems([navItem], animated: false) 
-        // Register cell classes
-        self.collectionView!.register(WeatherCell.self, forCellWithReuseIdentifier: weatherCellIdentifier)
 
+        
+//       navBar.tintColor = .clear
+        
+        let addItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(doNotihng))
+ 
+        
+         self.navigationController?.navigationItem.setRightBarButton(addItem, animated: true)
+//        self.navigationController?.navigationController.up
+        
+       
         // Do any additional setup after loading the view.
+         self.collectionView!.register(WeatherCell.self, forCellWithReuseIdentifier: weatherCellIdentifier)
+        
     }
-
+    @objc private func doNotihng(){}
     /*
     // MARK: - Navigation
 

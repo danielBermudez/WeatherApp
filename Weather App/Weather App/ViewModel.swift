@@ -48,7 +48,25 @@ class ViewModel{
         })
     }
     
-    
+    func testCity(cityName : String, completionHandler : @escaping (Bool) -> Void ) {
+        struct error : Codable{
+            let cod : String
+        }
+        let decoder = JSONDecoder()
+        request.testCity(cityName: cityName, completionHandler: { (data) in
+               do {
+                let error = try  decoder.decode(error.self, from: data)
+                print (error.cod)
+               completionHandler(false)
+     
+               
+                
+        } catch {
+           completionHandler(true)
+        }
+            })
+   
+    }
     
     
 }
