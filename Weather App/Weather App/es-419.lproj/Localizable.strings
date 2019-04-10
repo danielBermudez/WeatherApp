@@ -1,0 +1,18 @@
+/* 
+  Localizable.strings
+  Weather App
+
+  Created by Daniel Bermudez on 4/10/19.
+  Copyright © 2019 Endava. All rights reserved.
+*/
+"Temperature" = "Temperatura";
+"Latitude" = "Latitud";
+"Longitude" = "Longitud" ;
+"WindSpeed" = "Velocidad del Viento" ;
+"Cloudiness" = "Nubosidad" ;
+"Pressure" = "Presión" ;
+"Humidity" = "Humedad" ;
+"AddCity" = "Añadir Ciudad" ;
+"CityAdded" = "Ciudad Añadida Correctamente";
+"CityNotFound" = "No se pudo encontrar la ciudad";
+"Cancel" = "Cancelar" ;

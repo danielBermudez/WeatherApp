@@ -30,7 +30,7 @@ struct CoordinatesModel : Codable{
         let cloudiness: Int
         let pressure:Int
         let humidity: Int
-//        let city: CityModel?
+
         
 }
 

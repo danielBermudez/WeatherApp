@@ -9,8 +9,12 @@
 import Foundation
 class ViewModel{
     let request = Request()
-    var cityNameList = ["Bogota","Tokyo"]
+    let citiesKey = "citiesarray"
+    var cityNameList = [String]()
     var cityModelList = [CityModel]()
+    init() {
+        loadCitynames()
+    }
    
     func getDataFromRequest(completionHandler: @escaping (([Data])-> Void)){
          var data = [Data]()
@@ -27,6 +31,22 @@ class ViewModel{
       
         
     }
+    func loadCitynames(){
+        let initialCities =  ["Bogota","Tokyo","kyoto","Cali","Pasto","Tampa","Orlando","Atlanta","Barranquilla","Pereira"]
+        UserDefaults.standard.register(defaults: [
+            citiesKey : initialCities ] )
+        cityNameList = UserDefaults.standard.value(forKey: citiesKey) as! [String]
+    }
+    func updateModel(){
+        cityModelList.removeAll()
+        convertDataToModel(completionHandler: {})
+    }
+    func addCity(cityName : String){
+        if !cityNameList.contains(cityName){
+        cityNameList.append(cityName)
+    UserDefaults.standard.setValue(cityNameList , forKey: citiesKey)
+        }
+    }
     func convertDataToModel(completionHandler : @escaping (() -> Void)){
         getDataFromRequest(completionHandler: { data in
             for dataSet in data{
@@ -39,7 +59,6 @@ class ViewModel{
                     var city = try decoder.decode(CityModel.self, from: dataSet)
                     city.weather = wheatherModel
                     self.cityModelList.append(city)
-                    
                 } catch {
                     print (error)
                 }
@@ -50,23 +69,24 @@ class ViewModel{
     
     func testCity(cityName : String, completionHandler : @escaping (Bool) -> Void ) {
         struct error : Codable{
-            let cod : String
+            let code : String
+            private enum CodingKeys:String,CodingKey{
+                case code = "cod"
+            }
         }
         let decoder = JSONDecoder()
         request.testCity(cityName: cityName, completionHandler: { (data) in
                do {
                 let error = try  decoder.decode(error.self, from: data)
-                print (error.cod)
+                print (error.code)
                completionHandler(false)
-     
-               
-                
         } catch {
            completionHandler(true)
         }
             })
    
     }
+    
     
     
 }

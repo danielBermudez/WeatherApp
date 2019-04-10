@@ -28,6 +28,7 @@ class DetailWeatherViewController: UIViewController {
         self.view.backgroundColor = .blue
         // Do any additional setup after loading the view.
        setupLabels()
+        
       }
    
     
@@ -70,6 +71,9 @@ class DetailWeatherViewController: UIViewController {
        
         
     }
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        self.view.setNeedsUpdateConstraints()
+    }
     private func setupLatitudeAndLongitudeLabels(){
         latitudeLabel.textColor = .white
         latitudeLabel.font = UIFont(name: "Futura", size: 20)
@@ -95,7 +99,7 @@ class DetailWeatherViewController: UIViewController {
     }
     private func setupWindLabel(){
         windLabel.textColor = .white
-        windLabel.font = UIFont(name: "Futura", size: 30)
+        windLabel.font = UIFont(name: "Futura", size: 25)
         windLabel.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(windLabel)
         NSLayoutConstraint.activate(
@@ -160,13 +164,14 @@ class DetailWeatherViewController: UIViewController {
 extension DetailWeatherViewController: DetailDelegate{
     func loadCityModel(city: CityModel) {
         cityLabel.text = city.name
-        latitudeLabel.text = String(city.coordinates.latitude)
-        longitudeLabel.text = String(city.coordinates.longitude)
-        temperatureLabel.text = String( city.weather!.temperature)
-        windLabel.text = String( city.weather!.wind)
-        cloudinessLabel.text = String( city.weather!.cloudiness)
-        pressureLabel.text = String( city.weather!.pressure)
-        humidityLabel.text =  String( city.weather!.humidity)
+       
+        latitudeLabel.text = " \(NSLocalizedString("Latitude", comment: "")) \(city.coordinates.latitude)"
+        longitudeLabel.text = " \(NSLocalizedString("Longitude", comment: "")) \(city.coordinates.longitude)"
+        temperatureLabel.text = "\(city.weather!.temperature) K"
+        windLabel.text = " \(NSLocalizedString("WindSpeed", comment: "")) \(city.weather!.wind) m/s"
+        cloudinessLabel.text = " \(NSLocalizedString("Cloudiness", comment: "")) \(city.weather!.cloudiness) % "
+        pressureLabel.text = " \(NSLocalizedString("Pressure", comment: "")) \(city.weather!.pressure) hPa"
+        humidityLabel.text =  " \(NSLocalizedString("Humidity", comment: ""))  \(city.weather!.humidity) %"
         
         
     }
