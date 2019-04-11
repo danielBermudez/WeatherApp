@@ -40,6 +40,7 @@ class CustomCollectionViewController: UICollectionViewController, UICollectionVi
         viewModel.convertDataToModel(completionHandler: {
             DispatchQueue.main.async {
                 cityModelList = viewModel.cityModelList
+                self.sizeCounter = 0
                 self.collectionView.reloadData()
             }
         })
@@ -93,7 +94,7 @@ class CustomCollectionViewController: UICollectionViewController, UICollectionVi
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: weatherCellIdentifier, for: indexPath) as! WeatherCell
         cell.cityLabel.text = cityModelList[indexPath.item].name
-        cell.degreeLabel.text =  "\(cityModelList[indexPath.item].weather!.temperature) K"
+        cell.degreeLabel.text =  "\(String(format: "%.2f",cityModelList[indexPath.item].weather!.temperature))  °C"
         
         // Configure the cell
         
@@ -177,17 +178,17 @@ class WeatherCell: UICollectionViewCell{
 extension CustomCollectionViewController :addCityDelegate{
     func updateViewCollection(){
         viewModel.cityModelList.removeAll()
-        
         loadData()
         
     }
     func addCity(cityName: String,completionHandler :  @escaping (Bool) -> Void ) {
         
         viewModel.testCity(cityName: cityName, completionHandler: {validation in
+           
             DispatchQueue.main.async {
                 
                 if validation == true {
-                    viewModel.addCity(cityName: cityName)
+                     viewModel.addCity(cityName: cityName)
                     self.updateViewCollection()
                 }
                 completionHandler(validation)

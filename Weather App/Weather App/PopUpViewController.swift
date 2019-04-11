@@ -12,36 +12,101 @@ class PopUpViewController: UIViewController, UITextFieldDelegate {
     private var customView: UIView!
     var cityTextField = UITextField()
     var delegate : addCityDelegate!
+    let addCityButton = UIButton()
+    let cancelButton = UIButton()
+    var verticalStackview = UIStackView()
+    var horizontalStackview = UIStackView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
+        setTransparency()
         setCustomView()
-        setAddCityButton()
-        setTextField()
+        
         self.customView.backgroundColor = .lightGray
-        setCancelButton()
+        
         
         // any other objects should be tied to this view as superView
         // for example adding this okayButton
         
         
     }
-    
-    private func setCustomView(){
-        let customViewFrame = CGRect(x: 0  , y: view.frame.height / 5, width: view.frame.width, height: 100 )
-        customView = UIView(frame: customViewFrame)
-        customView.backgroundColor = .white
-        view.addSubview(customView)
-        self.view.addSubview(customView)
-        customView.isHidden = false
+    private func setHorizontalStackview(){
+        let buttonArray = [cancelButton,addCityButton]
+        horizontalStackview = UIStackView(arrangedSubviews: buttonArray)
+        horizontalStackview.axis = .horizontal
+        horizontalStackview.distribution = .fillEqually
+        horizontalStackview.alignment = .fill
+        horizontalStackview.spacing = 0
+        horizontalStackview.translatesAutoresizingMaskIntoConstraints = false
+    }
+    private func setVerticalStackview(){
+       
+        let verticalArray = [cityTextField,horizontalStackview]
+        verticalStackview = UIStackView(arrangedSubviews: verticalArray)
+       verticalStackview.axis = .vertical
+         verticalStackview.distribution = .fillEqually
+        verticalStackview.alignment = .fill
+         verticalStackview.spacing = 0
+         verticalStackview.translatesAutoresizingMaskIntoConstraints = false
+        customView.addSubview( verticalStackview)
+        
+    }
+    private func setStackviewConstraints(){
+//       verticalStackview.translatesAutoresizingMaskIntoConstraints = false
+         verticalStackview.heightAnchor.constraint(equalToConstant: 100 ).isActive = true
+         verticalStackview.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
+        verticalStackview.topAnchor.constraint(equalTo: customView.topAnchor).isActive = true
+      
+        
+        
+    }
+    private func setTransparency(){
+        let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.view.addSubview(blurEffectView)
     }
     
-    private func setAddCityButton(){
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        self.customView.removeConstraints(self.customView.constraints)
+        setCustomViewConstraints()
+  
+       verticalStackview.removeFromSuperview()
+       setVerticalStackview()
+        setStackviewConstraints()
         
-        let addCityFrame = CGRect(x: customView.frame.width / 2, y: customView.frame.height - 50 , width: view.frame.width / 2 , height: 50)
-        let addCityButton = UIButton(frame: addCityFrame)
-        addCityButton.backgroundColor = .gray
+    }
+    
+    private func setCustomViewConstraints(){
+        customView.translatesAutoresizingMaskIntoConstraints = false
+        customView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        customView.heightAnchor.constraint(equalToConstant: 100 ).isActive = true
+        customView.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
+        customView.topAnchor.constraint(equalTo:view.topAnchor,constant: view.frame.height / 6).isActive = true
+        customView.backgroundColor = .white
+        
+    }
+    
+    
+    private func setCustomView(){
+        
+        customView = UIView()
+        view.addSubview(customView)
+        setCustomViewConstraints()
+        setTextField()
+        setAddCityButton()
+        setCancelButton()
+        setHorizontalStackview()
+        setVerticalStackview()
+        setStackviewConstraints()
+
+    }
+    
+   
+    private func setAddCityButton(){
+        addCityButton.backgroundColor = .lightGray
         let color = UIColor.blue
         let colorAttribute = [NSAttributedString.Key.foregroundColor : color]
         let title = NSAttributedString(string: NSLocalizedString("AddCity", comment: ""), attributes: colorAttribute)
@@ -49,12 +114,11 @@ class PopUpViewController: UIViewController, UITextFieldDelegate {
         addCityButton.addTarget(self, action: #selector(addcity) , for: .touchUpInside)
         customView.addSubview(addCityButton)
         
-        
     }
+   
+    
     private func setCancelButton(){
         
-        let addCityFrame = CGRect(x: 0, y: customView.frame.height - 50 , width: view.frame.width / 2 , height: 50)
-        let cancelButton = UIButton(frame: addCityFrame)
         cancelButton.backgroundColor = .gray
         let color = UIColor.blue
         let colorAttribute = [NSAttributedString.Key.foregroundColor : color]
@@ -66,11 +130,11 @@ class PopUpViewController: UIViewController, UITextFieldDelegate {
         
     }
     @objc func  cancel(){
-     self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     @objc private func addcity(){
-       let text = cityTextField.text!.replacingOccurrences(of: " ", with: "%20", options: .literal, range: nil)
-       
+        let text = cityTextField.text!.replacingOccurrences(of: " ", with: "%20", options: .literal, range: nil)
+        
         delegate?.addCity(cityName: text , completionHandler: { result in
             DispatchQueue.main.async {
                 var alert: UIAlertController
@@ -78,7 +142,7 @@ class PopUpViewController: UIViewController, UITextFieldDelegate {
                     alert = UIAlertController(title: NSLocalizedString("CityAdded", comment: ""), message: nil, preferredStyle: .alert)
                     self.dismiss(animated: true, completion: nil)
                 }else {
-                     alert = UIAlertController(title: NSLocalizedString("CityNotFound", comment: ""), message: nil, preferredStyle: .alert)
+                    alert = UIAlertController(title: NSLocalizedString("CityNotFound", comment: ""), message: nil, preferredStyle: .alert)
                     
                 }
                 let action1 = UIAlertAction(title: "Ok", style: .default) { (action:UIAlertAction) in
@@ -87,14 +151,15 @@ class PopUpViewController: UIViewController, UITextFieldDelegate {
                 }
                 alert.addAction(action1)
                 self.present(alert, animated: true)
-               
                 
-                            }
+                
+            }
         } )
-    
+        
     }
+ 
     private func setTextField(){
-        cityTextField = UITextField(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
+        cityTextField = UITextField()
         cityTextField.borderStyle = UITextField.BorderStyle.roundedRect
         cityTextField.keyboardType = UIKeyboardType.default
         cityTextField.clearButtonMode = UITextField.ViewMode.whileEditing

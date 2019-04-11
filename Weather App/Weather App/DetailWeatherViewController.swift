@@ -20,6 +20,8 @@ class DetailWeatherViewController: UIViewController {
     let cloudinessLabel = UILabel()
     let pressureLabel = UILabel()
     let humidityLabel = UILabel()
+    var labelArray = [UILabel]()
+    var stackview = UIStackView()
  
     
     
@@ -28,6 +30,7 @@ class DetailWeatherViewController: UIViewController {
         self.view.backgroundColor = .blue
         // Do any additional setup after loading the view.
        setupLabels()
+        setupConstraints()
         
       }
    
@@ -42,18 +45,30 @@ class DetailWeatherViewController: UIViewController {
         setupHumidityLabel()
 
     }
+    private func setupConstraints(){
+        setupCityConstraints()
+        setupTemperatureConstraints()
+        setupLatitudeAndLongitudeConstraints()
+        setupWindConstraints()
+        setupCloudinessConstraints()
+        setupPressureConstraints()
+        setupHumidityConstraints()
+        
+    }
+
+   
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        
+        self.view.removeConstraints(self.view.constraints)
+        setupConstraints()
+    }
+    
     
     private func setupCityLabel(){
         cityLabel.textColor = .white
       cityLabel.font = UIFont(name: "Futura", size: 50)
      
         cityLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(cityLabel)
-        NSLayoutConstraint.activate(
-            [
-                cityLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                cityLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -(self.view.frame.height / 3))
-            ])
         
 
     }
@@ -61,52 +76,29 @@ class DetailWeatherViewController: UIViewController {
         temperatureLabel.textColor = .white
         temperatureLabel.font = UIFont(name: "Futura", size: 40)
         
-        temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(temperatureLabel)
-        NSLayoutConstraint.activate(
-            [
-               temperatureLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-               temperatureLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -(self.view.frame.height / 4.5))
-            ])
-       
-        
     }
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        self.view.setNeedsUpdateConstraints()
-    }
+
     private func setupLatitudeAndLongitudeLabels(){
+        
         latitudeLabel.textColor = .white
         latitudeLabel.font = UIFont(name: "Futura", size: 20)
-      
         longitudeLabel.textColor = .white
         longitudeLabel.font = UIFont(name: "Futura", size: 20)
        
-        let labelArray = [latitudeLabel,longitudeLabel]
-        let stackview = UIStackView(arrangedSubviews: labelArray)
+        labelArray = [latitudeLabel,longitudeLabel]
+        stackview = UIStackView(arrangedSubviews: labelArray)
         stackview.axis = .horizontal
         stackview.distribution = .fillEqually
         stackview.alignment = .fill
         stackview.spacing = 5
         stackview.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(stackview)
-        NSLayoutConstraint.activate(
-            [
-                stackview.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                stackview.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -(self.view.frame.height / 3.5))
-            ])
-     
-        
+       
     }
     private func setupWindLabel(){
         windLabel.textColor = .white
         windLabel.font = UIFont(name: "Futura", size: 25)
         windLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(windLabel)
-        NSLayoutConstraint.activate(
-            [
-            windLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            windLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -(self.view.frame.height / 6))
-            ])
+        
        
         
     }
@@ -114,38 +106,103 @@ class DetailWeatherViewController: UIViewController {
         cloudinessLabel.textColor = .white
         cloudinessLabel.font = UIFont(name: "Futura", size: 30)
        cloudinessLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview( cloudinessLabel)
-        NSLayoutConstraint.activate(
-            [
-                 cloudinessLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                cloudinessLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -(self.view.frame.height / 8.7))
-            ])
         
     }
     private func setupPressureLabel(){
         pressureLabel.textColor = .white
        pressureLabel.font = UIFont(name: "Futura", size: 30)
-       pressureLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview( pressureLabel)
-        NSLayoutConstraint.activate(
-            [
-               pressureLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-               pressureLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: -(self.view.frame.height / 17))
-            ])
+       
         
     }
     private func setupHumidityLabel(){
         humidityLabel.textColor = .white
         humidityLabel.font = UIFont(name: "Futura", size: 30)
+        
+       
+    }
+
+    private func setupCityConstraints(){
+        cityLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(cityLabel)
+        if (self.view.traitCollection.verticalSizeClass == UIUserInterfaceSizeClass.compact){
+            self.cityLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40 ).isActive = true
+        }else {
+            self.cityLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 100 ).isActive = true
+        }
+                cityLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+    }
+    private func setupTemperatureConstraints(){
+        temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(temperatureLabel)
+        
+                temperatureLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+   
+            temperatureLabel.topAnchor.constraint(equalTo: self.cityLabel.bottomAnchor, constant: 0 ).isActive = true
+        
+        
+        
+    }
+    private func setupLatitudeAndLongitudeConstraints(){
+        
+        stackview.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(stackview)
+       
+                stackview.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+        
+            stackview.topAnchor.constraint(equalTo: self.temperatureLabel.bottomAnchor, constant: 0).isActive = true
+       
+        
+        
+        
+        
+    }
+    private func setupWindConstraints(){
+        windLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(windLabel)
+        
+                windLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+        
+            windLabel.topAnchor.constraint(equalTo: self.stackview.bottomAnchor , constant: 0 ).isActive = true
+        
+        
+    }
+    private func setupCloudinessConstraints(){
+        
+        cloudinessLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview( cloudinessLabel)
+       
+                cloudinessLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+      
+            cloudinessLabel.topAnchor.constraint(equalTo: self.windLabel.bottomAnchor, constant: 0 ).isActive = true
+    }
+    private func setupPressureConstraints(){
+        pressureLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview( pressureLabel)
+        
+                pressureLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+       
+           pressureLabel.topAnchor.constraint(equalTo: self.cloudinessLabel.bottomAnchor, constant: 0 ).isActive = true
+      
+        
+        
+    }
+    private func setupHumidityConstraints(){
+        
         humidityLabel.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview( humidityLabel)
-        NSLayoutConstraint.activate(
-            [
-                humidityLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-                humidityLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0)
-            ])
-       
-       
+      
+                humidityLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+        
+      
+            humidityLabel.topAnchor.constraint(equalTo: self.pressureLabel.bottomAnchor, constant: 0 ).isActive = true
+        
+        
     }
     
 
@@ -164,10 +221,9 @@ class DetailWeatherViewController: UIViewController {
 extension DetailWeatherViewController: DetailDelegate{
     func loadCityModel(city: CityModel) {
         cityLabel.text = city.name
-       
         latitudeLabel.text = " \(NSLocalizedString("Latitude", comment: "")) \(city.coordinates.latitude)"
         longitudeLabel.text = " \(NSLocalizedString("Longitude", comment: "")) \(city.coordinates.longitude)"
-        temperatureLabel.text = "\(city.weather!.temperature) K"
+        temperatureLabel.text = "\(String(format: "%.2f",city.weather!.temperature)) °C"
         windLabel.text = " \(NSLocalizedString("WindSpeed", comment: "")) \(city.weather!.wind) m/s"
         cloudinessLabel.text = " \(NSLocalizedString("Cloudiness", comment: "")) \(city.weather!.cloudiness) % "
         pressureLabel.text = " \(NSLocalizedString("Pressure", comment: "")) \(city.weather!.pressure) hPa"

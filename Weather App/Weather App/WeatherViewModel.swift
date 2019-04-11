@@ -39,7 +39,7 @@ class WeatherViewModel{
     
     func createWeatherModel(weather: weather)-> WeatherModel{
         
-        return WeatherModel(temperature: weather.main.temperature, wind: weather.wind.speed, cloudiness: weather.clouds.all, pressure: weather.main.pressure, humidity: weather.main.humidity)
+        return WeatherModel(temperature: (weather.main.temperature - 273.15), wind: weather.wind.speed, cloudiness: weather.clouds.all, pressure: weather.main.pressure, humidity: weather.main.humidity)
         
         
     }
