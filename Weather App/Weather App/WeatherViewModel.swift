@@ -9,7 +9,7 @@
 import Foundation
 class WeatherViewModel{
     
-    struct weather :Codable{
+    struct weather :Codable {
         let main : main
         let wind: wind
         let clouds : clouds
@@ -24,12 +24,14 @@ class WeatherViewModel{
             case temperature = "temp",humidity = "humidity", pressure = "pressure"
         }
     }
+    
     struct wind : Codable {
         let speed : Double
         private enum CodingKeys:String,CodingKey{
             case speed = "speed"
         }
     }
+    
     struct clouds : Codable {
         let all : Int
         private enum CodingKeys:String,CodingKey{
@@ -37,10 +39,8 @@ class WeatherViewModel{
         }
     }
     
-    func createWeatherModel(weather: weather)-> WeatherModel{
-        
+    func createWeatherModel(weather: weather) -> WeatherModel {
         return WeatherModel(temperature: (weather.main.temperature - 273.15), wind: weather.wind.speed, cloudiness: weather.clouds.all, pressure: weather.main.pressure, humidity: weather.main.humidity)
-        
-        
     }
+    
 }
